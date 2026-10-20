@@ -1,23 +1,44 @@
 import { useEffect, useRef, useState } from "react";
-import KartlaggningForm from "@/components/KartlaggningForm";
-import ForslagKort, { type Forslag } from "@/components/ForslagKort";
-
-// Tillfälliga exempeltexter tills kopplingen till Claude finns (steg 4).
-const EXEMPEL: Forslag = {
-  automatisera:
-    "Här beskrivs vilka delar av uppgiften som kan automatiseras och vad som bör göras av en människa.",
-  losning:
-    "Här förklaras vilken typ av AI-lösning som passar, med enkla ord och utan teknisk jargong.",
-  timmar: "Här visas en ungefärlig uppskattning av hur många timmar per vecka ni kan spara.",
-};
+import KartlaggningForm, { type FormData } from "@/components/KartlaggningForm";
+import ForslagKort from "@/components/ForslagKort";
+import Kontakt from "@/components/Kontakt";
+import type { Svar } from "@/types";
 
 export default function App() {
-  const [forslag, setForslag] = useState<Forslag | null>(null);
+  const [svar, setSvar] = useState<Svar | null>(null);
+  const [laddar, setLaddar] = useState(false);
+  const [felmeddelande, setFelmeddelande] = useState<string | null>(null);
   const resultatRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (forslag) resultatRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }, [forslag]);
+    if (svar || felmeddelande)
+      resultatRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [svar, felmeddelande]);
+
+  async function hamtaForslag(data: FormData) {
+    setLaddar(true);
+    setFelmeddelande(null);
+    try {
+      // Namn och e-post skickas inte till AI:n, bara det som behövs för analysen.
+      const res = await fetch("/api/forslag", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ bransch: data.bransch, uppgift: data.uppgift, timmar: data.timmar }),
+      });
+      const body = await res.json().catch(() => null);
+      if (!res.ok || !body) {
+        setSvar(null);
+        setFelmeddelande(body?.fel ?? "Något gick fel. Försök igen om en stund.");
+        return;
+      }
+      setSvar(body as Svar);
+    } catch {
+      setSvar(null);
+      setFelmeddelande("Kunde inte nå tjänsten. Kontrollera din internetanslutning och försök igen.");
+    } finally {
+      setLaddar(false);
+    }
+  }
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -69,15 +90,26 @@ export default function App() {
               <p className="mt-5 text-sm text-[#7e8ca0]">Gratis och utan förpliktelser.</p>
             </section>
 
-            <KartlaggningForm onSkicka={() => setForslag(EXEMPEL)} />
+            <KartlaggningForm onSkicka={hamtaForslag} laddar={laddar} />
           </div>
         </div>
 
-        {forslag && (
-          <div ref={resultatRef} className="mx-auto max-w-6xl scroll-mt-6 px-5 pb-24">
-            <ForslagKort forslag={forslag} />
-          </div>
-        )}
+        <div ref={resultatRef} className="mx-auto max-w-6xl scroll-mt-6 px-5" aria-live="polite">
+          {felmeddelande && (
+            <p
+              role="alert"
+              className="mx-auto mt-12 max-w-2xl rounded-xl border border-red-200 bg-red-50 p-5 text-center text-red-700"
+            >
+              {felmeddelande}
+            </p>
+          )}
+          {svar && (
+            <div className="pb-24">
+              <ForslagKort svar={svar} />
+              <Kontakt text={svar.avslutning} />
+            </div>
+          )}
+        </div>
       </main>
 
       <footer className="bg-navy py-12 text-muted-light">

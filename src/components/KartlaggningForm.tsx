@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react";
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight, Check, LoaderCircle } from "lucide-react";
 
 const BRANSCHER = [
   "Bygg och hantverk",
@@ -46,7 +46,13 @@ const faltKlass =
   "w-full rounded-xl border bg-white px-3.5 py-2.5 text-base leading-normal text-ink outline-none transition placeholder:text-muted/60 focus:border-brand focus:ring-4 focus:ring-brand/15";
 
 // Layout inspirerad av "Contact" (Ravi Katiyar) på 21st.dev, i indefinit.ai:s varumärke.
-export default function KartlaggningForm({ onSkicka }: { onSkicka: (data: FormData) => void }) {
+export default function KartlaggningForm({
+  onSkicka,
+  laddar,
+}: {
+  onSkicka: (data: FormData) => void;
+  laddar: boolean;
+}) {
   const [data, setData] = useState<FormData>(TOMT);
   const [fel, setFel] = useState<Fel>({});
 
@@ -59,7 +65,7 @@ export default function KartlaggningForm({ onSkicka }: { onSkicka: (data: FormDa
     e.preventDefault();
     const nyaFel = validera(data);
     setFel(nyaFel);
-    if (Object.keys(nyaFel).length > 0) return;
+    if (Object.keys(nyaFel).length > 0 || laddar) return;
     onSkicka(data);
   }
 
@@ -201,13 +207,24 @@ export default function KartlaggningForm({ onSkicka }: { onSkicka: (data: FormDa
 
         <button
           type="submit"
-          className="group flex w-full items-center justify-center gap-2 rounded-xl bg-brand px-8 py-4 text-[17px] font-medium text-white transition duration-200 hover:-translate-y-0.5 hover:scale-[1.02] hover:bg-brand-dark hover:shadow-[0_12px_24px_-10px_rgb(27_182_138/0.5)] active:translate-y-0 active:scale-[0.99] focus:outline-none focus-visible:ring-4 focus-visible:ring-brand/40 motion-reduce:transform-none sm:w-auto"
+          disabled={laddar}
+          aria-busy={laddar}
+          className="group flex disabled:cursor-wait disabled:opacity-80 disabled:hover:translate-y-0 disabled:hover:scale-100 w-full items-center justify-center gap-2 rounded-xl bg-brand px-8 py-4 text-[17px] font-medium text-white transition duration-200 hover:-translate-y-0.5 hover:scale-[1.02] hover:bg-brand-dark hover:shadow-[0_12px_24px_-10px_rgb(27_182_138/0.5)] active:translate-y-0 active:scale-[0.99] focus:outline-none focus-visible:ring-4 focus-visible:ring-brand/40 motion-reduce:transform-none sm:w-auto"
         >
-          Få mitt AI-förslag
-          <ArrowRight
-            className="size-4 transition group-hover:translate-x-0.5"
-            aria-hidden="true"
-          />
+          {laddar ? (
+            <>
+              Analyserar …
+              <LoaderCircle className="size-4 animate-spin" aria-hidden="true" />
+            </>
+          ) : (
+            <>
+              Få mitt AI-förslag
+              <ArrowRight
+                className="size-4 transition group-hover:translate-x-0.5"
+                aria-hidden="true"
+              />
+            </>
+          )}
         </button>
       </form>
     </div>

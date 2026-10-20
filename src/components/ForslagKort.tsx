@@ -1,20 +1,29 @@
-import { Clock, Lightbulb, ListChecks, type LucideIcon } from "lucide-react";
+import { Clock, Info, Lightbulb, ListChecks, type LucideIcon } from "lucide-react";
+import type { Svar } from "@/types";
 
-export type Forslag = {
-  automatisera: string;
-  losning: string;
-  timmar: string;
-};
+type Kort = { rubrik: string; text: string; ikon: LucideIcon; markering?: string };
 
-type Kort = { rubrik: string; text: string; ikon: LucideIcon };
+const timFormat = new Intl.NumberFormat("sv-SE", { maximumFractionDigits: 1 });
 
 // Layout inspirerad av "Feature Problem Cards" (Mohammad Shehadeh) på 21st.dev,
 // i indefinit.ai:s varumärke.
-export default function ForslagKort({ forslag }: { forslag: Forslag }) {
+export default function ForslagKort({ svar }: { svar: Svar }) {
+  if (svar.typ !== "forslag") return <Meddelande svar={svar} />;
+
+  const intervall =
+    svar.timmar_max > 0
+      ? `${timFormat.format(svar.timmar_min)}–${timFormat.format(svar.timmar_max)} h/vecka`
+      : undefined;
+
   const kort: Kort[] = [
-    { rubrik: "Det här kan automatiseras", text: forslag.automatisera, ikon: ListChecks },
-    { rubrik: "Typ av AI-lösning", text: forslag.losning, ikon: Lightbulb },
-    { rubrik: "Uppskattad tidsbesparing", text: forslag.timmar, ikon: Clock },
+    { rubrik: "Det här kan automatiseras", text: svar.automatisera, ikon: ListChecks },
+    { rubrik: "Typ av AI-lösning", text: svar.losning, ikon: Lightbulb },
+    {
+      rubrik: "Uppskattad tidsbesparing",
+      text: svar.tidsbesparing,
+      ikon: Clock,
+      markering: intervall,
+    },
   ];
 
   return (
@@ -33,7 +42,7 @@ export default function ForslagKort({ forslag }: { forslag: Forslag }) {
       </div>
 
       <ul className="grid gap-5 md:grid-cols-3">
-        {kort.map(({ rubrik, text, ikon: Ikon }, i) => (
+        {kort.map(({ rubrik, text, ikon: Ikon, markering }, i) => (
           <li
             key={rubrik}
             style={{ animationDelay: `${i * 150}ms` }}
@@ -41,10 +50,42 @@ export default function ForslagKort({ forslag }: { forslag: Forslag }) {
           >
             <Orb ikon={Ikon} />
             <h3 className="mt-5 text-lg font-medium">{rubrik}</h3>
+            {markering && (
+              <p className="mt-2 font-serif text-3xl font-semibold text-brand-dark">{markering}</p>
+            )}
             <p className="mt-2 text-muted">{text}</p>
           </li>
         ))}
       </ul>
+
+      <p className="mt-6 text-center text-sm text-muted">
+        Uppskattningen är ungefärlig och bygger enbart på din beskrivning.
+      </p>
+    </section>
+  );
+}
+
+/** Visas när beskrivningen är för vag eller när AI inte passar uppgiften. */
+function Meddelande({ svar }: { svar: Svar }) {
+  const rubrik =
+    svar.typ === "mer_information" ? "Vi behöver veta lite mer" : "AI är kanske inte rätt väg här";
+
+  return (
+    <section aria-labelledby="forslag-rubrik" className="pt-20">
+      <div className="mx-auto max-w-2xl rounded-xl border border-line bg-white p-8 text-center animate-tona-upp motion-reduce:animate-none">
+        <div className="flex justify-center">
+          <Orb ikon={Info} />
+        </div>
+        <h2 id="forslag-rubrik" className="mt-5 font-serif text-3xl font-bold tracking-tight">
+          {rubrik}
+        </h2>
+        <p className="mt-4 text-muted">{svar.meddelande}</p>
+        {svar.typ === "mer_information" && (
+          <p className="mt-4 text-sm text-muted">
+            Komplettera beskrivningen i formuläret ovan och skicka igen.
+          </p>
+        )}
+      </div>
     </section>
   );
 }

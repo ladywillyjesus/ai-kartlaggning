@@ -1,0 +1,6 @@
+# Konfiguration för Cloudflare Pages. Inga hemligheter här:
+# API-nyckeln läggs lokalt i .dev.vars och i produktion som miljövariabel i Cloudflare.
+name = "ai-kartlaggning"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-10-01"
+compatibility_flags = ["nodejs_compat"]

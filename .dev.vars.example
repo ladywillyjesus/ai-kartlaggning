@@ -1,0 +1,3 @@
+# Mall för lokala hemligheter. Kopiera till .dev.vars (som git ignorerar)
+# och klistra in din riktiga nyckel där. Lägg aldrig en riktig nyckel i den här filen.
+ANTHROPIC_API_KEY=din-nyckel-här
