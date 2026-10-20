@@ -1,11 +1,14 @@
 // Cloudflare Pages Function: POST /api/forslag
-// Tar emot formulärdata, frågar Claude och returnerar ett strukturerat förslag.
-// API-nyckeln läses från miljövariabeln ANTHROPIC_API_KEY och når aldrig webbläsaren.
+// Tar emot formulärdata, frågar Claude, sparar förfrågan i Supabase och returnerar förslaget.
+// Nycklarna läses från miljövariabler och når aldrig webbläsaren.
 
 import Anthropic from "@anthropic-ai/sdk";
+import { createClient } from "@supabase/supabase-js";
 
 interface Env {
   ANTHROPIC_API_KEY: string;
+  SUPABASE_URL?: string;
+  SUPABASE_SECRET_KEY?: string;
 }
 
 const MAX_TIMMAR = 60;
@@ -99,12 +102,50 @@ function fel(meddelande: string, status: number) {
   return json({ fel: meddelande }, status);
 }
 
-export const onRequestPost = async ({ request, env }: { request: Request; env: Env }) => {
+/** Sparar förfrågan i Supabase. Ett fel här får aldrig stoppa svaret till besökaren. */
+async function sparaForfragan(
+  env: Env,
+  rad: { bransch: string; uppgift: string; timmar: number; svar: Svar; namn: string; epost: string },
+) {
+  if (!env.SUPABASE_URL || !env.SUPABASE_SECRET_KEY) {
+    console.warn("Supabase är inte konfigurerat; förfrågan sparas inte.");
+    return;
+  }
+  const supabase = createClient(env.SUPABASE_URL, env.SUPABASE_SECRET_KEY, {
+    auth: { persistSession: false },
+  });
+  const { error } = await supabase.from("forfragningar").insert({
+    bransch: rad.bransch,
+    uppgift: rad.uppgift,
+    timmar: rad.timmar,
+    typ: rad.svar.typ,
+    forslag: rad.svar,
+    namn: rad.namn || null,
+    epost: rad.epost || null,
+  });
+  if (error) console.error(`Kunde inte spara i Supabase: ${error.message}`);
+}
+
+export const onRequestPost = async ({
+  request,
+  env,
+  waitUntil,
+}: {
+  request: Request;
+  env: Env;
+  waitUntil: (promise: Promise<unknown>) => void;
+}) => {
   if (!env.ANTHROPIC_API_KEY) {
     return fel("Tjänsten är inte konfigurerad ännu. Försök igen senare.", 500);
   }
 
-  let indata: { bransch?: unknown; uppgift?: unknown; timmar?: unknown };
+  let indata: {
+    bransch?: unknown;
+    uppgift?: unknown;
+    timmar?: unknown;
+    namn?: unknown;
+    epost?: unknown;
+  };
   try {
     indata = await request.json();
   } catch {
@@ -114,12 +155,17 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
   const bransch = typeof indata.bransch === "string" ? indata.bransch.trim().slice(0, 100) : "";
   const uppgift = typeof indata.uppgift === "string" ? indata.uppgift.trim() : "";
   const timmar = Number(indata.timmar);
+  // Kontaktuppgifter är frivilliga och skickas aldrig till Claude.
+  const namn = typeof indata.namn === "string" ? indata.namn.trim().slice(0, 200) : "";
+  const epost = typeof indata.epost === "string" ? indata.epost.trim().slice(0, 320) : "";
 
   if (!bransch) return fel("Välj en bransch.", 400);
   if (uppgift.length < 20 || uppgift.length > 2000)
     return fel("Beskriv uppgiften med mellan 20 och 2000 tecken.", 400);
   if (!Number.isFinite(timmar) || timmar <= 0 || timmar > MAX_TIMMAR)
     return fel(`Ange ett antal timmar mellan 1 och ${MAX_TIMMAR}.`, 400);
+  if (epost && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(epost))
+    return fel("Ange en giltig e-postadress, eller lämna fältet tomt.", 400);
 
   const client = new Anthropic({ apiKey: env.ANTHROPIC_API_KEY });
 
@@ -155,6 +201,9 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
     // Säkerställ PRD-regeln: besparingen får aldrig överstiga de angivna timmarna.
     svar.timmar_max = Math.min(Math.max(svar.timmar_max, 0), timmar);
     svar.timmar_min = Math.min(Math.max(svar.timmar_min, 0), svar.timmar_max);
+
+    // Sparas i bakgrunden så att besökaren inte behöver vänta på databasen.
+    waitUntil(sparaForfragan(env, { bransch, uppgift, timmar, svar, namn, epost }));
 
     return json(svar);
   } catch (error) {

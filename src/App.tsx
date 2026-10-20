@@ -19,11 +19,11 @@ export default function App() {
     setLaddar(true);
     setFelmeddelande(null);
     try {
-      // Namn och e-post skickas inte till AI:n, bara det som behövs för analysen.
+      // Serverfunktionen sparar namn och e-post (om de angetts) men skickar dem aldrig till AI:n.
       const res = await fetch("/api/forslag", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ bransch: data.bransch, uppgift: data.uppgift, timmar: data.timmar }),
+        body: JSON.stringify(data),
       });
       const body = await res.json().catch(() => null);
       if (!res.ok || !body) {
