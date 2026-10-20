@@ -43,9 +43,9 @@ function validera(data: FormData): Fel {
 }
 
 const faltKlass =
-  "w-full rounded-xl border bg-white/80 px-3.5 py-2.5 text-base outline-none transition placeholder:text-slate-400 focus:border-brand focus:bg-white focus:ring-4 focus:ring-brand/20";
+  "w-full rounded-xl border bg-white px-3.5 py-2.5 text-base leading-normal text-ink outline-none transition placeholder:text-muted/60 focus:border-brand focus:ring-4 focus:ring-brand/15";
 
-// Design inspirerad av "Contact" (Ravi Katiyar) på 21st.dev.
+// Layout inspirerad av "Contact" (Ravi Katiyar) på 21st.dev, i indefinit.ai:s varumärke.
 export default function KartlaggningForm({ onSkicka }: { onSkicka: (data: FormData) => void }) {
   const [data, setData] = useState<FormData>(TOMT);
   const [fel, setFel] = useState<Fel>({});
@@ -63,23 +63,23 @@ export default function KartlaggningForm({ onSkicka }: { onSkicka: (data: FormDa
     onSkicka(data);
   }
 
-  const kantfarg = (falt: keyof FormData) => (fel[falt] ? "border-red-400" : "border-slate-200");
+  const kantfarg = (falt: keyof FormData) => (fel[falt] ? "border-red-400" : "border-line");
 
   return (
-    <div className="rounded-3xl border border-white/70 bg-white/70 p-5 shadow-xl shadow-slate-900/5 backdrop-blur-xl sm:p-8">
+    <div className="rounded-xl border border-line bg-white p-5 text-ink shadow-[0_24px_48px_-24px_rgb(0_0_0/0.45)] sm:p-8">
       <form onSubmit={skicka} noValidate className="space-y-7">
         <fieldset aria-describedby={fel.bransch ? "bransch-fel" : undefined}>
-          <legend className="mb-3 font-semibold">Vilken bransch är ni i?</legend>
+          <legend className="mb-3 font-medium">Vilken bransch är ni i?</legend>
           <div className="flex flex-wrap gap-2">
             {BRANSCHER.map((b) => {
               const vald = data.bransch === b;
               return (
                 <label
                   key={b}
-                  className={`flex cursor-pointer items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm transition has-[:focus-visible]:ring-4 has-[:focus-visible]:ring-brand/30 ${
+                  className={`flex cursor-pointer items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm leading-normal transition has-[:focus-visible]:ring-4 has-[:focus-visible]:ring-brand/30 ${
                     vald
-                      ? "border-brand bg-brand text-slate-900 font-medium"
-                      : "border-slate-200 bg-white/80 text-slate-700 hover:border-brand"
+                      ? "border-brand bg-brand font-medium text-white"
+                      : "border-line bg-white text-ink hover:border-brand hover:text-brand-dark"
                   }`}
                 >
                   <input
@@ -104,10 +104,10 @@ export default function KartlaggningForm({ onSkicka }: { onSkicka: (data: FormDa
         </fieldset>
 
         <div>
-          <label htmlFor="uppgift" className="mb-1.5 block font-semibold">
+          <label htmlFor="uppgift" className="mb-1.5 block font-medium">
             Vilken uppgift tar mycket tid?
           </label>
-          <p id="uppgift-hjalp" className="mb-2.5 text-sm text-slate-500">
+          <p id="uppgift-hjalp" className="mb-2.5 text-sm text-muted">
             Beskriv vad ni gör, hur ofta och vad som är tidskrävande.
           </p>
           <textarea
@@ -128,7 +128,7 @@ export default function KartlaggningForm({ onSkicka }: { onSkicka: (data: FormDa
         </div>
 
         <div>
-          <label htmlFor="timmar" className="mb-2.5 block font-semibold">
+          <label htmlFor="timmar" className="mb-2.5 block font-medium">
             Hur många timmar i veckan läggs på uppgiften?
           </label>
           <div className="flex items-center gap-3">
@@ -145,7 +145,7 @@ export default function KartlaggningForm({ onSkicka }: { onSkicka: (data: FormDa
               aria-describedby={fel.timmar ? "timmar-fel" : undefined}
               className={`${faltKlass} ${kantfarg("timmar")} max-w-28`}
             />
-            <span className="text-slate-500">timmar/vecka</span>
+            <span className="text-muted">timmar/vecka</span>
           </div>
           {fel.timmar && (
             <p id="timmar-fel" className="mt-1.5 text-sm text-red-600">
@@ -154,10 +154,10 @@ export default function KartlaggningForm({ onSkicka }: { onSkicka: (data: FormDa
           )}
         </div>
 
-        <fieldset className="rounded-2xl border border-slate-200/70 bg-white/60 p-4 sm:p-5">
+        <fieldset className="rounded-xl border border-line bg-cloud p-4 sm:p-5">
           <legend className="sr-only">Kontaktuppgifter (frivilligt)</legend>
-          <p className="mb-1 font-semibold">Vill du att vi kontaktar dig? (frivilligt)</p>
-          <p className="mb-4 text-sm text-slate-500">
+          <p className="mb-1 font-medium">Vill du att vi kontaktar dig? (frivilligt)</p>
+          <p className="mb-4 text-sm text-muted">
             Fyll bara i om du vill att Indefinit AI hör av sig om din förfrågan. Vi använder
             uppgifterna enbart för att kontakta dig och delar dem inte med någon annan. Du kan när
             som helst be oss radera dem.
@@ -173,7 +173,7 @@ export default function KartlaggningForm({ onSkicka }: { onSkicka: (data: FormDa
                 autoComplete="name"
                 value={data.namn}
                 onChange={(e) => uppdatera("namn", e.target.value)}
-                className={`${faltKlass} border-slate-200`}
+                className={`${faltKlass} border-line`}
               />
             </div>
             <div>
@@ -201,7 +201,7 @@ export default function KartlaggningForm({ onSkicka }: { onSkicka: (data: FormDa
 
         <button
           type="submit"
-          className="group flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 px-6 py-3.5 font-semibold text-white shadow-lg shadow-slate-900/10 transition hover:bg-slate-800 focus:outline-none focus-visible:ring-4 focus-visible:ring-brand/40 sm:w-auto"
+          className="group flex w-full items-center justify-center gap-2 rounded-xl bg-brand px-8 py-4 text-[17px] font-medium text-white transition duration-200 hover:-translate-y-0.5 hover:scale-[1.02] hover:bg-brand-dark hover:shadow-[0_12px_24px_-10px_rgb(27_182_138/0.5)] active:translate-y-0 active:scale-[0.99] focus:outline-none focus-visible:ring-4 focus-visible:ring-brand/40 motion-reduce:transform-none sm:w-auto"
         >
           Få mitt AI-förslag
           <ArrowRight

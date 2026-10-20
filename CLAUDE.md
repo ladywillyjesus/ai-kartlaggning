@@ -7,7 +7,8 @@ Webbverktyg för små svenska företag: företaget beskriver en återkommande ar
 
 ## Teknik
 - React + Tailwind CSS (komponenter från 21st.dev läggs till efterhand).
-- Varumärkesfärg: limegrön `#64D64F` från logotypen (som yta, med mörk text ovanpå). Mörkare grön `#2F7D22` för grön text på vit bakgrund. Typsnitt: Inter.
+- Samma varumärke som indefinit.ai (Brand Book): smaragd `#1BB68A` (knappar, vit text), mörk smaragd `#0E7A5B` (hover, grön text), marinblå `#10233B` (hero, sidfot), skifferblå `#14243B` (text), gråblå `#5B6B7F` (sekundär text), kallt vit `#F7F9FB` (bakgrund). Färgerna finns som Tailwind-tokens i `src/index.css`.
+- Typsnitt: Fraunces för rubriker, Inter (400/500) för brödtext. Sentence case, inga ikoner med robotar.
 - Logotypen ligger i `public/logo-icon.png`.
 - Anropet till Claude API görs i en serverfunktion (Cloudflare Pages Functions), aldrig från webbläsaren.
 - Förfrågningar sparas i Supabase.
