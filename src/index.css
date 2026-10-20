@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+@theme {
+  /* Limegrön från logotypen. Används som yta, med mörk text ovanpå. */
+  --color-brand: #64d64f;
+  --color-brand-hover: #52c23e;
+  /* Mörkare grön för text på vit bakgrund (tillräcklig kontrast). */
+  --color-brand-dark: #2f7d22;
+  --color-brand-light: #eefbea;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  @apply bg-slate-50 font-sans text-slate-800 antialiased;
+}

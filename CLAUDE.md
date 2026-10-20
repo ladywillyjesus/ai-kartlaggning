@@ -7,7 +7,8 @@ Webbverktyg för små svenska företag: företaget beskriver en återkommande ar
 
 ## Teknik
 - React + Tailwind CSS (komponenter från 21st.dev läggs till efterhand).
-- Varumärkesfärg: smaragdgrön `#1BB68A`. Typsnitt: Inter.
+- Varumärkesfärg: limegrön `#64D64F` från logotypen (som yta, med mörk text ovanpå). Mörkare grön `#2F7D22` för grön text på vit bakgrund. Typsnitt: Inter.
+- Logotypen ligger i `public/logo-icon.png`.
 - Anropet till Claude API görs i en serverfunktion (Cloudflare Pages Functions), aldrig från webbläsaren.
 - Förfrågningar sparas i Supabase.
 - Publiceras på Cloudflare Pages: kartlaggning.indefinit.ai.
