@@ -8,6 +8,28 @@
   --color-brand-dark: #2f7d22;
   --color-brand-light: #eefbea;
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  /* Långsamt svävande färgfläckar i bakgrunden */
+  --animate-svava: svava 18s ease-in-out infinite;
+  /* Förslagskorten tonar in nedifrån, ett i taget */
+  --animate-tona-upp: tona-upp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+
+  @keyframes svava {
+    0%,
+    100% {
+      transform: translate(0, 0) scale(1);
+    }
+    50% {
+      transform: translate(2rem, 1.5rem) scale(1.08);
+    }
+  }
+
+  @keyframes tona-upp {
+    from {
+      opacity: 0;
+      transform: translateY(1rem);
+    }
+  }
 }
 
 html {

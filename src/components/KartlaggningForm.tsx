@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from "react";
+import { ArrowRight, Check } from "lucide-react";
 
 const BRANSCHER = [
   "Bygg och hantverk",
@@ -42,12 +43,12 @@ function validera(data: FormData): Fel {
 }
 
 const faltKlass =
-  "w-full rounded-lg border bg-white px-3 py-2.5 text-base outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30";
+  "w-full rounded-xl border bg-white/80 px-3.5 py-2.5 text-base outline-none transition placeholder:text-slate-400 focus:border-brand focus:bg-white focus:ring-4 focus:ring-brand/20";
 
-export default function KartlaggningForm() {
+// Design inspirerad av "Contact" (Ravi Katiyar) på 21st.dev.
+export default function KartlaggningForm({ onSkicka }: { onSkicka: (data: FormData) => void }) {
   const [data, setData] = useState<FormData>(TOMT);
   const [fel, setFel] = useState<Fel>({});
-  const [skickat, setSkickat] = useState(false);
 
   function uppdatera(falt: keyof FormData, varde: string) {
     setData((d) => ({ ...d, [falt]: varde }));
@@ -59,54 +60,62 @@ export default function KartlaggningForm() {
     const nyaFel = validera(data);
     setFel(nyaFel);
     if (Object.keys(nyaFel).length > 0) return;
-    // Steg 4: här anropas serverfunktionen som frågar Claude.
-    setSkickat(true);
+    onSkicka(data);
   }
 
-  const kantfarg = (falt: keyof FormData) => (fel[falt] ? "border-red-400" : "border-slate-300");
+  const kantfarg = (falt: keyof FormData) => (fel[falt] ? "border-red-400" : "border-slate-200");
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
-      <form onSubmit={skicka} noValidate className="space-y-6">
-        <div>
-          <label htmlFor="bransch" className="mb-1.5 block font-medium">
-            Bransch
-          </label>
-          <select
-            id="bransch"
-            value={data.bransch}
-            onChange={(e) => uppdatera("bransch", e.target.value)}
-            aria-invalid={!!fel.bransch}
-            aria-describedby={fel.bransch ? "bransch-fel" : undefined}
-            className={`${faltKlass} ${kantfarg("bransch")}`}
-          >
-            <option value="">Välj bransch …</option>
-            {BRANSCHER.map((b) => (
-              <option key={b} value={b}>
-                {b}
-              </option>
-            ))}
-          </select>
+    <div className="rounded-3xl border border-white/70 bg-white/70 p-5 shadow-xl shadow-slate-900/5 backdrop-blur-xl sm:p-8">
+      <form onSubmit={skicka} noValidate className="space-y-7">
+        <fieldset aria-describedby={fel.bransch ? "bransch-fel" : undefined}>
+          <legend className="mb-3 font-semibold">Vilken bransch är ni i?</legend>
+          <div className="flex flex-wrap gap-2">
+            {BRANSCHER.map((b) => {
+              const vald = data.bransch === b;
+              return (
+                <label
+                  key={b}
+                  className={`flex cursor-pointer items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm transition has-[:focus-visible]:ring-4 has-[:focus-visible]:ring-brand/30 ${
+                    vald
+                      ? "border-brand bg-brand text-slate-900 font-medium"
+                      : "border-slate-200 bg-white/80 text-slate-700 hover:border-brand"
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="bransch"
+                    value={b}
+                    checked={vald}
+                    onChange={() => uppdatera("bransch", b)}
+                    className="sr-only"
+                  />
+                  {vald && <Check className="size-3.5" aria-hidden="true" />}
+                  {b}
+                </label>
+              );
+            })}
+          </div>
           {fel.bransch && (
-            <p id="bransch-fel" className="mt-1.5 text-sm text-red-600">
+            <p id="bransch-fel" className="mt-2 text-sm text-red-600">
               {fel.bransch}
             </p>
           )}
-        </div>
+        </fieldset>
 
         <div>
-          <label htmlFor="uppgift" className="mb-1.5 block font-medium">
+          <label htmlFor="uppgift" className="mb-1.5 block font-semibold">
             Vilken uppgift tar mycket tid?
           </label>
-          <p id="uppgift-hjalp" className="mb-2 text-sm text-slate-500">
-            Beskriv vad ni gör, hur ofta och vad som är tidskrävande. Exempel: ”Vi svarar på
-            liknande kundfrågor via e-post varje dag och letar upp information i olika system.”
+          <p id="uppgift-hjalp" className="mb-2.5 text-sm text-slate-500">
+            Beskriv vad ni gör, hur ofta och vad som är tidskrävande.
           </p>
           <textarea
             id="uppgift"
             rows={5}
             value={data.uppgift}
             onChange={(e) => uppdatera("uppgift", e.target.value)}
+            placeholder="Till exempel: Vi svarar på liknande kundfrågor via e-post varje dag och letar upp information i olika system."
             aria-invalid={!!fel.uppgift}
             aria-describedby={fel.uppgift ? "uppgift-hjalp uppgift-fel" : "uppgift-hjalp"}
             className={`${faltKlass} ${kantfarg("uppgift")} resize-y`}
@@ -119,22 +128,25 @@ export default function KartlaggningForm() {
         </div>
 
         <div>
-          <label htmlFor="timmar" className="mb-1.5 block font-medium">
+          <label htmlFor="timmar" className="mb-2.5 block font-semibold">
             Hur många timmar i veckan läggs på uppgiften?
           </label>
-          <input
-            id="timmar"
-            type="number"
-            inputMode="decimal"
-            min={1}
-            max={MAX_TIMMAR}
-            step={0.5}
-            value={data.timmar}
-            onChange={(e) => uppdatera("timmar", e.target.value)}
-            aria-invalid={!!fel.timmar}
-            aria-describedby={fel.timmar ? "timmar-fel" : undefined}
-            className={`${faltKlass} ${kantfarg("timmar")} max-w-40`}
-          />
+          <div className="flex items-center gap-3">
+            <input
+              id="timmar"
+              type="number"
+              inputMode="decimal"
+              min={1}
+              max={MAX_TIMMAR}
+              step={0.5}
+              value={data.timmar}
+              onChange={(e) => uppdatera("timmar", e.target.value)}
+              aria-invalid={!!fel.timmar}
+              aria-describedby={fel.timmar ? "timmar-fel" : undefined}
+              className={`${faltKlass} ${kantfarg("timmar")} max-w-28`}
+            />
+            <span className="text-slate-500">timmar/vecka</span>
+          </div>
           {fel.timmar && (
             <p id="timmar-fel" className="mt-1.5 text-sm text-red-600">
               {fel.timmar}
@@ -142,9 +154,9 @@ export default function KartlaggningForm() {
           )}
         </div>
 
-        <fieldset className="rounded-xl bg-slate-50 p-4 sm:p-5">
+        <fieldset className="rounded-2xl border border-slate-200/70 bg-white/60 p-4 sm:p-5">
           <legend className="sr-only">Kontaktuppgifter (frivilligt)</legend>
-          <p className="mb-1 font-medium">Vill du att vi kontaktar dig? (frivilligt)</p>
+          <p className="mb-1 font-semibold">Vill du att vi kontaktar dig? (frivilligt)</p>
           <p className="mb-4 text-sm text-slate-500">
             Fyll bara i om du vill att Indefinit AI hör av sig om din förfrågan. Vi använder
             uppgifterna enbart för att kontakta dig och delar dem inte med någon annan. Du kan när
@@ -161,7 +173,7 @@ export default function KartlaggningForm() {
                 autoComplete="name"
                 value={data.namn}
                 onChange={(e) => uppdatera("namn", e.target.value)}
-                className={`${faltKlass} border-slate-300`}
+                className={`${faltKlass} border-slate-200`}
               />
             </div>
             <div>
@@ -189,21 +201,15 @@ export default function KartlaggningForm() {
 
         <button
           type="submit"
-          className="w-full rounded-lg bg-brand px-6 py-3 font-semibold text-slate-900 transition hover:bg-brand-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark focus-visible:ring-offset-2 sm:w-auto"
+          className="group flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 px-6 py-3.5 font-semibold text-white shadow-lg shadow-slate-900/10 transition hover:bg-slate-800 focus:outline-none focus-visible:ring-4 focus-visible:ring-brand/40 sm:w-auto"
         >
           Få mitt AI-förslag
+          <ArrowRight
+            className="size-4 transition group-hover:translate-x-0.5"
+            aria-hidden="true"
+          />
         </button>
       </form>
-
-      {skickat && (
-        <div
-          role="status"
-          className="mt-6 rounded-xl border border-brand/30 bg-brand-light p-4 text-sm text-brand-dark"
-        >
-          Tack! Formuläret fungerar. Här kommer ditt AI-förslag att visas när kopplingen till AI är
-          på plats.
-        </div>
-      )}
     </div>
   );
 }
