@@ -1,7 +1,9 @@
-import { Globe } from "lucide-react";
+import { ArrowRight, Globe } from "lucide-react";
 import ContactCards from "@/components/ui/contact-cards";
 
 const EPOST = "info@indefinitai.com";
+// Kontaktformuläret på huvudsajten: nästa steg efter AI-förslaget är en personlig analys.
+const KONTAKTFORMULAR = "https://indefinitai.com/#kontakt";
 const LINKEDIN = "https://www.linkedin.com/in/idalmis-maria-figueredo-alarcon-685393361/";
 
 /** Inbjudan att kontakta Indefinit AI, visas under förslaget. */
@@ -21,8 +23,21 @@ export default function Kontakt({ text }: { text: string }) {
         Vill du ha en riktig analys av ert fall?
       </h2>
       <p className="mx-auto mt-5 max-w-[52ch] text-muted">{text}</p>
+      <p className="mx-auto mt-3 max-w-[52ch] text-muted">
+        Förslaget ovan är en första, automatisk bedömning. Beskriv ert fall för Idalmis så läser
+        hon själv och svarar inom 24 timmar – inte med en säljpitch.
+      </p>
 
-      <div className="mt-8 flex justify-center">
+      <a
+        href={KONTAKTFORMULAR}
+        className="group mt-8 inline-flex items-center justify-center gap-2 rounded-xl bg-brand px-8 py-4 text-[17px] font-medium text-white transition duration-200 hover:-translate-y-0.5 hover:scale-[1.02] hover:bg-brand-dark hover:shadow-[0_12px_24px_-10px_rgb(27_182_138/0.5)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand/40 motion-reduce:transform-none"
+      >
+        Beskriv ditt fall för Idalmis
+        <ArrowRight className="size-4 transition group-hover:translate-x-0.5" aria-hidden="true" />
+      </a>
+
+      <p className="mt-8 text-sm text-muted">Eller hör av dig direkt:</p>
+      <div className="mt-3 flex justify-center">
         <ContactCards
           email={EPOST}
           links={[
@@ -53,8 +68,7 @@ export default function Kontakt({ text }: { text: string }) {
           ]}
         />
       </div>
-      <p className="mt-4 text-sm text-muted">
-        Eller skriv direkt till{" "}
+      <p className="mt-4 text-sm">
         <a href={`mailto:${EPOST}`} className="text-brand-dark underline">
           {EPOST}
         </a>

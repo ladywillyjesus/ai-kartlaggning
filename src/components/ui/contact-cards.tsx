@@ -218,7 +218,7 @@ export function CopyEmailButton({
     <button
       type="button"
       onClick={copy}
-      className={`relative flex cursor-pointer items-center justify-center rounded-xl bg-brand px-6 py-3 font-medium text-white transition-all hover:bg-brand-dark active:scale-95 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand/40 ${className}`}
+      className={`relative flex cursor-pointer items-center justify-center rounded-xl border border-line bg-white px-6 py-3 font-medium text-ink transition-all hover:border-brand hover:text-brand-dark active:scale-95 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand/40 ${className}`}
     >
       <span className={`transition-all duration-500 ${state === "idle" ? "" : "opacity-0 blur-[2px]"}`}>
         {label}
