@@ -14,7 +14,7 @@ create table if not exists public.forfragningar (
 );
 
 comment on table public.forfragningar is
-  'Förfrågningar från kartlaggning.indefinit.ai. Namn och e-post sparas bara om besökaren anger dem.';
+  'Förfrågningar från kartlaggning.indefinitai.com. Namn och e-post sparas bara om besökaren anger dem.';
 
 -- Radnivåsäkerhet påslagen och inga policyer: webbläsaren (publishable/anon-nyckeln)
 -- kan varken läsa eller skriva. Bara serverfunktionen med den hemliga nyckeln kommer åt tabellen.

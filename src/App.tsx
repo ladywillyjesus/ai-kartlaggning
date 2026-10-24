@@ -44,7 +44,7 @@ export default function App() {
     <div className="flex min-h-screen flex-col">
       <header className="px-5 py-5">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-6 gap-y-3">
-          <a href="https://indefinit.ai" className="flex flex-col gap-1.5 no-underline">
+          <a href="https://indefinitai.com" className="flex flex-col gap-1.5 no-underline">
             <span className="flex items-center gap-3.5">
               <img
                 src="/logo-icon.png"
@@ -60,10 +60,10 @@ export default function App() {
             </span>
           </a>
           <a
-            href="https://indefinit.ai"
+            href="https://indefinitai.com"
             className="text-[15px] font-medium text-muted transition hover:text-brand-dark"
           >
-            ← Till indefinit.ai
+            ← Till indefinitai.com
           </a>
         </div>
       </header>
@@ -115,8 +115,8 @@ export default function App() {
       <footer className="bg-navy py-12 text-muted-light">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-5 text-sm">
           <span>© {new Date().getFullYear()} Indefinit AI</span>
-          <a href="https://indefinit.ai" className="transition hover:text-white">
-            indefinit.ai
+          <a href="https://indefinitai.com" className="transition hover:text-white">
+            indefinitai.com
           </a>
         </div>
       </footer>
@@ -124,7 +124,7 @@ export default function App() {
   );
 }
 
-/** Mjukt smaragdgrönt sken i heron, samma effekt som på indefinit.ai. */
+/** Mjukt smaragdgrönt sken i heron, samma effekt som på indefinitai.com. */
 function Sken() {
   return (
     <div

@@ -38,12 +38,12 @@ export default function Kontakt({ text }: { text: string }) {
               ),
             },
             {
-              label: "indefinit.ai",
-              href: "https://indefinit.ai",
+              label: "indefinitai.com",
+              href: "https://indefinitai.com",
               icon: <Globe className="size-6" aria-hidden="true" />,
               card: (
                 <div className="flex w-64 flex-col gap-1 p-4 text-left">
-                  <span className="font-medium">indefinit.ai</span>
+                  <span className="font-medium">indefinitai.com</span>
                   <span className="text-sm text-muted">
                     AI-assistenter som byggs efter din verksamhet.
                   </span>

@@ -7,12 +7,12 @@ Webbverktyg för små svenska företag: företaget beskriver en återkommande ar
 
 ## Teknik
 - React + Tailwind CSS (komponenter från 21st.dev läggs till efterhand).
-- Samma varumärke som indefinit.ai (Brand Book): smaragd `#1BB68A` (knappar, vit text), mörk smaragd `#0E7A5B` (hover, grön text), marinblå `#10233B` (hero, sidfot), skifferblå `#14243B` (text), gråblå `#5B6B7F` (sekundär text), kallt vit `#F7F9FB` (bakgrund). Färgerna finns som Tailwind-tokens i `src/index.css`.
+- Samma varumärke som indefinitai.com (Brand Book): smaragd `#1BB68A` (knappar, vit text), mörk smaragd `#0E7A5B` (hover, grön text), marinblå `#10233B` (hero, sidfot), skifferblå `#14243B` (text), gråblå `#5B6B7F` (sekundär text), kallt vit `#F7F9FB` (bakgrund). Färgerna finns som Tailwind-tokens i `src/index.css`.
 - Typsnitt: Fraunces för rubriker, Inter (400/500) för brödtext. Sentence case, inga ikoner med robotar.
 - Logotypen ligger i `public/logo-icon.png`.
 - Anropet till Claude API görs i en serverfunktion (Cloudflare Pages Functions), aldrig från webbläsaren.
 - Förfrågningar sparas i Supabase.
-- Publiceras på Cloudflare Pages: kartlaggning.indefinit.ai.
+- Publiceras på Cloudflare Pages: kartlaggning.indefinitai.com.
 - Ska fungera bra på mobil.
 
 ## Säkerhet
@@ -32,7 +32,7 @@ Webbverktyg för små svenska företag: företaget beskriver en återkommande ar
 4. Koppling till Claude API.
 5. Koppling till Supabase.
 6. Publicering på Cloudflare Pages.
-7. Knapp på indefinit.ai som leder till verktyget.
+7. Knapp på indefinitai.com som leder till verktyget.
 8. README.
 
 ## Utanför denna version

@@ -45,7 +45,7 @@ function validera(data: FormData): Fel {
 const faltKlass =
   "w-full rounded-xl border bg-white px-3.5 py-2.5 text-base leading-normal text-ink outline-none transition placeholder:text-muted/60 focus:border-brand focus:ring-4 focus:ring-brand/15";
 
-// Layout inspirerad av "Contact" (Ravi Katiyar) på 21st.dev, i indefinit.ai:s varumärke.
+// Layout inspirerad av "Contact" (Ravi Katiyar) på 21st.dev, i indefinitai.com:s varumärke.
 export default function KartlaggningForm({
   onSkicka,
   laddar,

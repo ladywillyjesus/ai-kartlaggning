@@ -6,7 +6,7 @@ type Kort = { rubrik: string; text: string; ikon: LucideIcon; markering?: string
 const timFormat = new Intl.NumberFormat("sv-SE", { maximumFractionDigits: 1 });
 
 // Layout inspirerad av "Feature Problem Cards" (Mohammad Shehadeh) på 21st.dev,
-// i indefinit.ai:s varumärke.
+// i indefinitai.com:s varumärke.
 export default function ForslagKort({ svar }: { svar: Svar }) {
   if (svar.typ !== "forslag") return <Meddelande svar={svar} />;
 

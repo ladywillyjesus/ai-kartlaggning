@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* Samma varumärke som indefinit.ai (se Brand Book). */
+/* Samma varumärke som indefinitai.com (se Brand Book). */
 @theme {
   --color-brand: #1bb68a; /* Smaragd: knappar, detaljer */
   --color-brand-dark: #0e7a5b; /* Hover och grön text på ljus bakgrund */
@@ -16,7 +16,7 @@
   --font-sans: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
   --font-serif: "Fraunces", Georgia, serif;
 
-  /* Smaragdgrönt sken som svävar långsamt, som på indefinit.ai */
+  /* Smaragdgrönt sken som svävar långsamt, som på indefinitai.com */
   --animate-svava: svava 12s ease-in-out infinite;
   /* Förslagskorten tonar in nedifrån, ett i taget */
   --animate-tona-upp: tona-upp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;

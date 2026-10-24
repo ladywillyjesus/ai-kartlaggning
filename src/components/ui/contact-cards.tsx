@@ -3,7 +3,7 @@
  * med egna kort som visas när man håller muspekaren över ikonen.
  *
  * Baserad på komponenten "ContactCards" från 21st.dev, anpassad till svenska och
- * indefinit.ai:s varumärke (GitHub-kortet och dess externa API är borttagna).
+ * indefinitai.com:s varumärke (GitHub-kortet och dess externa API är borttagna).
  */
 
 import { type ReactNode, useEffect, useLayoutEffect, useRef, useState } from "react";
